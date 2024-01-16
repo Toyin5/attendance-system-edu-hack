@@ -1,23 +1,74 @@
 import { Request, Response } from 'express';
-
 import { handleServiceResponse } from '@common/utils/responseHandler';
 import { IUserService } from '@modules/user/userService';
+import { signJwt } from '@common/utils/jwt.util';
+import { IVerificationService } from '@modules/verification/verificationService';
 
 export class UserController {
   private readonly _service: IUserService;
+  private readonly _verificationService: IVerificationService;
 
-  constructor(service: IUserService) {
+  constructor(service: IUserService, verificationService: IVerificationService) {
     this._service = service;
+    this._verificationService = verificationService;
   }
 
-  getAllUsers = async (_: Request, response: Response) => {
+  getAllUsers = async (_: Request, res: Response) => {
     const serviceResponse = await this._service.findAll();
-    handleServiceResponse(serviceResponse, response);
+    handleServiceResponse(serviceResponse, res);
   };
 
-  getUserById = async (request: Request, response: Response) => {
-    const id = parseInt(request.params.id as string, 10);
-    const serviceResponse = await this._service.findById(id);
-    handleServiceResponse(serviceResponse, response);
+  getUserById = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const serviceResponse = await this._service.findById(id!);
+    handleServiceResponse(serviceResponse, res);
+  };
+
+  register = async (req: Request, res: Response) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(401).json({ error: 'Email/Password are required' });
+    }
+    const result = await this._service.register({ email, password });
+    const jwtToken = signJwt({ _id: result.responseObject });
+    res.cookie('attendance', jwtToken, { maxAge: 86400, httpOnly: true, secure: true });
+    handleServiceResponse(result, res);
+  };
+  login = async (req: Request, res: Response) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(401).json({ error: 'Email/Password are required' });
+    }
+    const result = await this._service.login({ email, password });
+    const jwtToken = signJwt({ _id: result.responseObject?._id });
+    res.cookie('attendance', jwtToken, { maxAge: 86400, httpOnly: true, secure: true });
+    handleServiceResponse(result, res);
+  };
+
+  logout = async (_: Request, res: Response) => {
+    res.clearCookie('attendance');
+
+    return res.send('successfully logged out');
+  };
+
+  verify = async (req: Request, res: Response) => {
+    const { token, id } = req.body;
+    const serviceResponse = await this._verificationService.verifyToken({ token: token, userId: id });
+    handleServiceResponse(serviceResponse, res);
+  };
+
+  onBoard = async (req: Request, res: Response) => {
+    const { _id } = req.user;
+    const { avatar, title, intro, qualifications, firstName, lastName } = req.body;
+    const result = await this._service.onBoard({
+      avatar,
+      title,
+      intro,
+      firstName,
+      lastName,
+      qualifications,
+      id: String(_id),
+    });
+    handleServiceResponse(result, res);
   };
 }

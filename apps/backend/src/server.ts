@@ -5,6 +5,7 @@ import express, { Express } from 'express';
 import helmet from 'helmet';
 import path from 'path';
 import { pino } from 'pino';
+import cookieParser from 'cookie-parser';
 
 import compressFilter from '@common/middleware/compressFilter';
 import errorHandler from '@common/middleware/errorHandler';
@@ -27,13 +28,16 @@ app.use(cors({ origin: [corsOrigin], credentials: true }));
 app.use(helmet());
 app.use(compression({ filter: compressFilter }));
 app.use(rateLimiter);
+app.use(cookieParser());
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: false }));
 
 // Request logging
 app.use(requestLogger());
 
 // Routes
 app.use('/health-check', healthCheckRouter);
-app.use('/users', usersRouter);
+app.use('/api', usersRouter);
 
 // Error handlers
 app.use(errorHandler());

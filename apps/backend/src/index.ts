@@ -1,9 +1,11 @@
+import { connectDB } from '@common/utils/database';
 import { getPort } from '@common/utils/envConfig';
 import { app, logger } from '@src/server';
 
 const port = getPort();
 
-const server = app.listen(port, () => {
+const server = app.listen(port, async () => {
+  await connectDB();
   logger.info(`Server listening on port ${port}`);
 });
 
