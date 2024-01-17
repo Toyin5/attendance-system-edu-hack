@@ -1,7 +1,10 @@
+import { Schema } from 'mongoose';
+
 export interface ICourse {
   name: string;
-  password: string;
-  lecturer_name: string;
-  email: string;
+  lecturer: Schema.Types.UUID;
   description: string;
+  slug: string;
+  code: string;
+  avatar: string;
 }

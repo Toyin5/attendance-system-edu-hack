@@ -1,6 +1,7 @@
+import { ICourse } from '@common/interfaces';
 import mongoose from 'mongoose';
 
-const course = new mongoose.Schema(
+const course = new mongoose.Schema<ICourse, unknown, unknown>(
   {
     name: {
       type: String,
@@ -13,15 +14,15 @@ const course = new mongoose.Schema(
     description: {
       type: String,
     },
-    avatar_url: {
+    avatar: {
       type: String,
     },
-    course_code: {
+    code: {
       type: String,
       unique: true,
     },
     lecturer: {
-      type: mongoose.Types.ObjectId,
+      type: mongoose.Types.UUID,
       ref: 'Users',
       select: false,
     },

@@ -14,7 +14,6 @@
     "check-format": "prettier --check 'src/**/*.{ts,js,json}'",
     "ts:check": "tsc --noEmit",
     "test": "jest",
-    "prepare": "husky install",
     "docker:build": "docker-compose build --no-cache",
     "docker:start": "docker-compose up",
     "docker:stop": "docker-compose down"
@@ -62,14 +61,6 @@
     "ts-jest": "^29.1.1",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3"
-  },
-  "lint-staged": {
-    "**/*.{ts,js}": [
-      "npm run lint:fix",
-      "npm run format",
-      "git add"
-    ],
-    "**/*.{ts,js,json,css,md}": "npm run format"
   },
   "author": "Toyin Muhammed",
   "repository": "https://github.com/Toyin5/attendance-system-edu-hack",
