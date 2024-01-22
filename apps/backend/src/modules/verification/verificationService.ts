@@ -24,9 +24,11 @@ export class VerificationService implements IVerificationService {
     try {
       const { token, userId } = credentials;
       const verification = await verificationModel.findOne({ userId });
+      console.log('body:', token);
       if (!verification) {
         return new ServiceResponse<boolean>(false, 'Link expired', null);
       }
+      console.log('db:', verification.token);
       if (verification.token === token) {
         await userModel.findByIdAndUpdate(userId, { verified: true });
         await verificationModel.findOneAndDelete({ userId });

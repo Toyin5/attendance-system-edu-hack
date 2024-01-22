@@ -46,9 +46,17 @@ const Login: React.FC = () => {
       showToast("Login successfully", "success");
     } catch (error: any) {
       if (error instanceof ServiceResponse) {
-        console.log(error);
-        showToast(error.errors?.message!, "info");
-        setLoading(false);
+        if (error.errors?.message!.includes("Unverified")) {
+          showToast(error.errors?.message!, "info");
+          setLoading(false);
+          const userId = localStorage.getItem("userId");
+          setTimeout(() => {
+            window.location.href = `/verify?id=${userId}`;
+          }, 2000);
+        } else {
+          showToast(error.errors?.message!, "info");
+          setLoading(false);
+        }
       }
     }
   };

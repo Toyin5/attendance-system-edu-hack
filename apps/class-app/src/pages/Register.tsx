@@ -15,7 +15,7 @@ const Register: React.FC = () => {
     message: "",
     variant: "info",
   });
-  const [_, setLocal] = useLocalStorage<string>("userId", "");
+
   const showToast = (
     message: string,
     variant: "info" | "error" | "success"
@@ -45,7 +45,10 @@ const Register: React.FC = () => {
 
       setLoading(false);
       showToast("Registered successfully", "success");
-      setLocal(response.responseObject!?.toString());
+      localStorage.setItem("userId", response.responseObject!?.toString());
+      setTimeout(() => {
+        window.location.href = `/verify?id=${response.responseObject!?.toString()}`;
+      }, 2000);
     } catch (error: any) {
       if (error instanceof ServiceResponse) {
         console.log(error);

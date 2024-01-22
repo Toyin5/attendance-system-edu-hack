@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Verification from "./pages/Verification";
+import Onboarding from "./pages/OnBoarding";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
   {
     path: "/verify",
     element: <Verification />,
+  },
+  {
+    path: "/onboard",
+    element: <Onboarding />,
   },
 ]);
 ReactDOM.createRoot(document.getElementById("root")!).render(
