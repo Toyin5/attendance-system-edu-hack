@@ -9,11 +9,11 @@ export const signJwt = (object: object) =>
 
 export const verifyJwt = (token: string) => {
   try {
-    const decodedValue = jwt.verify(token, process.env.PUBLIC_KEY as string);
-
+    const decodedValue = <jwt.JwtPayload>jwt.verify(token, process.env.PUBLIC_KEY as string);
+    console.log(decodedValue);
     return {
       expired: false,
-      decodedValue: decodedValue as jwt.JwtPayload,
+      decodedValue: decodedValue,
     };
   } catch (err) {
     return {

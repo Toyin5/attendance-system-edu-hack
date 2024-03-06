@@ -28,14 +28,19 @@ export class UserService implements IUserService {
     if (!userExists) {
       return new ServiceResponse<IUser>(false, "User doesn't exist!", null);
     }
-    const user = await userModel.findByIdAndUpdate(userExists._id, {
-      firstName,
-      lastName,
-      intro,
-      avatar,
-      title,
-      qualifications,
-    });
+    const user = await userModel.findByIdAndUpdate(
+      userExists._id,
+      {
+        firstName,
+        lastName,
+        intro,
+        avatar,
+        title,
+        qualifications,
+        isOnboardingCompleted: true,
+      },
+      { new: true }
+    );
     return new ServiceResponse<IUser>(true, 'User onboarded!', user);
   }
 
@@ -54,7 +59,7 @@ export class UserService implements IUserService {
         await this._verificationService.createVerification({ token: token, userId: userExists._id });
         return new ServiceResponse<IUser>(false, 'Unverified! check your mailbox', null);
       }
-      return new ServiceResponse<IUser>(true, 'Login successful', null);
+      return new ServiceResponse<IUser>(true, 'Login successful', userExists);
     } catch (ex) {
       logger.error(ex);
       return new ServiceResponse<IUser>(false, 'Service error', null, ex);

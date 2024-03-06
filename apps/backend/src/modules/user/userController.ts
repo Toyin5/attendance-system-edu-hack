@@ -30,7 +30,7 @@ export class UserController {
       return res.status(401).json({ error: 'Email/Password are required' });
     }
     const result = await this._service.register({ email, password });
-    const jwtToken = signJwt({ _id: result.responseObject });
+    const jwtToken = signJwt({ id: result.responseObject });
     res.cookie('attendance', jwtToken, { maxAge: 86400, httpOnly: true, secure: true });
     handleServiceResponse(result, res);
   };
@@ -40,7 +40,7 @@ export class UserController {
       return res.status(401).json({ error: 'Email/Password are required' });
     }
     const result = await this._service.login({ email, password });
-    const jwtToken = signJwt({ _id: result.responseObject?._id });
+    const jwtToken = signJwt({ id: result.responseObject?._id });
     res.cookie('attendance', jwtToken, { maxAge: 86400, httpOnly: true, secure: true });
     handleServiceResponse(result, res);
   };
@@ -54,11 +54,13 @@ export class UserController {
   verify = async (req: Request, res: Response) => {
     const { token, id } = req.body;
     const serviceResponse = await this._verificationService.verifyToken({ token: token, userId: id });
+    const jwtToken = signJwt({ id });
+    res.cookie('attendance', jwtToken, { maxAge: 86400, httpOnly: true, secure: true });
     handleServiceResponse(serviceResponse, res);
   };
 
   onBoard = async (req: Request, res: Response) => {
-    const { _id } = req.user;
+    const id = req.user;
     const { avatar, title, intro, qualifications, firstName, lastName } = req.body;
     const result = await this._service.onBoard({
       avatar,
@@ -66,8 +68,8 @@ export class UserController {
       intro,
       firstName,
       lastName,
-      qualifications,
-      id: String(_id),
+      qualifications: qualifications.split(' '),
+      id: String(id),
     });
     handleServiceResponse(result, res);
   };

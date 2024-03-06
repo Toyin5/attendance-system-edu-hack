@@ -15,6 +15,8 @@ const Login: React.FC = () => {
     message: "",
     variant: "info",
   });
+  const [_, setUser] = useLocalStorage("user", {});
+  const userId = localStorage.getItem("userId");
   const showToast = (
     message: string,
     variant: "info" | "error" | "success"
@@ -43,13 +45,17 @@ const Login: React.FC = () => {
       })) as ServiceResponse;
 
       setLoading(false);
-      showToast("Login successfully", "success");
+      showToast(response.message, "success");
+      console.log(response.responseObject);
+      setUser(response.responseObject!);
+      setTimeout(() => {
+        window.location.href = `/onboard?user=${userId}`;
+      }, 2000);
     } catch (error: any) {
       if (error instanceof ServiceResponse) {
         if (error.errors?.message!.includes("Unverified")) {
           showToast(error.errors?.message!, "info");
           setLoading(false);
-          const userId = localStorage.getItem("userId");
           setTimeout(() => {
             window.location.href = `/verify?id=${userId}`;
           }, 2000);

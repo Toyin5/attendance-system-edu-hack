@@ -41,6 +41,7 @@ const UserModel = new mongoose.Schema<IUser, unknown, unknown>(
     isOnboardingCompleted: {
       type: Boolean,
       default: false,
+      select: false,
     },
   },
   {

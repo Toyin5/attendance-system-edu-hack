@@ -71,6 +71,18 @@ api.interceptors.response.use(
         error.response.data
       );
       return Promise.reject(customErrorResponse);
+    } else if (error.response && error.response.status === 401) {
+      // Handle the 500 error here
+      console.error("HTTP 401 Error:", error);
+
+      // You can also create a custom error response for 500 errors if needed
+      const customErrorResponse = new ServiceResponse(
+        false,
+        "Unauthorized! Login in again",
+        null,
+        error.response.data
+      );
+      return Promise.reject(customErrorResponse);
     } else {
       // For other errors, simply reject the promise with the original error
       return Promise.reject(error);

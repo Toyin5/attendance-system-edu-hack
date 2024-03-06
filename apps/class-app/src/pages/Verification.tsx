@@ -34,7 +34,7 @@ const Verification: React.FC = () => {
       });
     }, 5000);
   };
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, _] = useSearchParams();
 
   const userId = searchParams.get("id");
   useEffect(() => {
@@ -52,7 +52,7 @@ const Verification: React.FC = () => {
       setLoading(false);
       showToast(response.message, "success");
       setTimeout(() => {
-        window.location.href = "/onboard";
+        window.location.href = `/onboard?user=${userId}`;
       }, 2000);
     } catch (error) {
       if (error instanceof ServiceResponse) {
