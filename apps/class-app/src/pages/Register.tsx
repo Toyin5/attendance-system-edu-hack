@@ -4,7 +4,6 @@ import { ServiceResponse, api } from "../utils/Axios";
 import apiUrls from "../utils/apiUrls";
 import { Loader } from "../components/Loader";
 import { Toast, ToastProps } from "../components/Toast";
-import useLocalStorage from "../hooks/useLocalStorage";
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState("");

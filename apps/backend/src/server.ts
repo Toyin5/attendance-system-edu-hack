@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import express, { Express } from 'express';
 import helmet from 'helmet';
 import path from 'path';
+// @ts-ignore
 import { pino } from 'pino';
 import cookieParser from 'cookie-parser';
 

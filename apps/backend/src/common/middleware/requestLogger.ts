@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
 import { Request, RequestHandler, Response } from 'express';
 import { IncomingMessage, ServerResponse } from 'http';
+// @ts-ignore
 import { LevelWithSilent } from 'pino';
 import { CustomAttributeKeys, Options, pinoHttp } from 'pino-http';
 

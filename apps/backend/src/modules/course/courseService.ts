@@ -7,14 +7,14 @@ import { logger } from '@src/server';
 
 export interface ICourseService {
   createCourse(course: ICourse): Promise<ServiceResponse<void>>;
-  findOne(id: string): Promise<ServiceResponse<ICourse> | null>;
-  findBySlug(slug: string): Promise<ServiceResponse<ICourse> | null>;
+  findOne(id: string): Promise<ServiceResponse<ICourse | null>>;
+  findBySlug(slug: string): Promise<ServiceResponse<ICourse | null>>;
   findAll(): Promise<ServiceResponse<ICourse[]>>;
-  findByLecturer(id: string): Promise<ServiceResponse<ICourse[]> | null>;
+  findByLecturer(id: string): Promise<ServiceResponse<ICourse[] | null>>;
 }
 
 export class courseService implements ICourseService {
-  async findByLecturer(id: string): Promise<ServiceResponse<ICourse[]> | null> {
+  async findByLecturer(id: string): Promise<ServiceResponse<ICourse[] | null>> {
     try {
       const courses = await CourseModel.find({ lecturer: id });
       return new ServiceResponse<ICourse[]>(true, 'Fetched successfully', courses);
@@ -31,14 +31,14 @@ export class courseService implements ICourseService {
       if (courseExists) {
         slug += generateRandomToken();
       }
-      const newCourse = await CourseModel.create({ name, avatar, code, description, lecturer, slug });
+      await CourseModel.create({ name, avatar, code, description, lecturer, slug });
       return new ServiceResponse<void>(true, 'Course created successfully', null);
     } catch (ex) {
       logger.error(ex);
       return new ServiceResponse<void>(false, 'Internal Server Error', null, ex);
     }
   }
-  async findOne(id: string): Promise<ServiceResponse<ICourse> | null> {
+  async findOne(id: string): Promise<ServiceResponse<ICourse | null>> {
     try {
       const course = await CourseModel.findById(id);
       if (course) {
@@ -50,7 +50,7 @@ export class courseService implements ICourseService {
       return new ServiceResponse<ICourse>(false, 'Internal Server Error', null, ex);
     }
   }
-  async findBySlug(slug: string): Promise<ServiceResponse<ICourse> | null> {
+  async findBySlug(slug: string): Promise<ServiceResponse<ICourse | null>> {
     try {
       const course = await CourseModel.findOne({ slug });
       if (course) {

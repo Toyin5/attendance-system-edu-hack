@@ -32,7 +32,7 @@ export class UserController {
     const result = await this._service.register({ email, password });
     const jwtToken = signJwt({ id: result.responseObject });
     res.cookie('attendance', jwtToken, { maxAge: 86400, httpOnly: true, secure: true });
-    handleServiceResponse(result, res);
+    return handleServiceResponse(result, res);
   };
   login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
@@ -40,9 +40,9 @@ export class UserController {
       return res.status(401).json({ error: 'Email/Password are required' });
     }
     const result = await this._service.login({ email, password });
-    const jwtToken = signJwt({ id: result.responseObject?._id });
+    const jwtToken = signJwt({ id: result.responseObject?.id });
     res.cookie('attendance', jwtToken, { maxAge: 86400, httpOnly: true, secure: true });
-    handleServiceResponse(result, res);
+    return handleServiceResponse(result, res);
   };
 
   logout = async (_: Request, res: Response) => {

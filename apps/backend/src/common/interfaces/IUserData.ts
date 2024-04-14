@@ -6,4 +6,6 @@ export interface IUSerData {
   avatar: string;
   intro: string;
   qualifications: string[];
+  verified?: boolean;
+  isOnboardingCompleted?: boolean;
 }

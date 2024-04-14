@@ -11,7 +11,7 @@ import { Schema } from 'mongoose';
 export interface IUserService {
   findAll(): Promise<ServiceResponse<IUser[] | null>>;
   findById(id: string): Promise<ServiceResponse<IUser | null>>;
-  login(credentials: IAuthRequest): Promise<ServiceResponse<IUser | null>>;
+  login(credentials: IAuthRequest): Promise<ServiceResponse<IUSerData | null>>;
   register(credentials: IAuthRequest): Promise<ServiceResponse<Schema.Types.UUID | null>>;
   onBoard(request: IUSerData): Promise<ServiceResponse<IUser | null>>;
 }
@@ -41,28 +41,40 @@ export class UserService implements IUserService {
       },
       { new: true }
     );
-    return new ServiceResponse<IUser>(true, 'User onboarded!', user);
+    return new ServiceResponse<IUser>(true, 'User onboard!', user);
   }
 
-  public async login(credentials: IAuthRequest): Promise<ServiceResponse<IUser | null>> {
+  public async login(credentials: IAuthRequest): Promise<ServiceResponse<IUSerData | null>> {
     try {
-      const userExists = await userModel.findOne({ email: credentials.email }).select('+password');
+      const userExists = await userModel
+        .findOne({ email: credentials.email })
+        .select('+password +isOnboardingCompleted');
       if (!userExists) {
-        return new ServiceResponse<IUser>(false, 'Invalid email/password', null);
+        return new ServiceResponse<IUSerData>(false, 'Invalid email/password', null);
       }
       const isValidPassword = await userExists.verifyPassword(credentials.password);
       if (!isValidPassword) {
-        return new ServiceResponse<IUser>(false, 'Invalid password', null);
+        return new ServiceResponse<IUSerData>(false, 'Invalid password', null);
       }
       if (!userExists.verified) {
         const token = generateRandomToken();
         await this._verificationService.createVerification({ token: token, userId: userExists._id });
-        return new ServiceResponse<IUser>(false, 'Unverified! check your mailbox', null);
+        return new ServiceResponse<IUSerData>(false, 'Unverified! check your mailbox', null);
       }
-      return new ServiceResponse<IUser>(true, 'Login successful', userExists);
+      return new ServiceResponse<IUSerData>(true, 'Login successful', {
+        avatar: userExists.avatar,
+        firstName: userExists.firstName,
+        lastName: userExists.lastName,
+        id: userExists._id as unknown as string,
+        intro: userExists.intro,
+        qualifications: userExists.qualifications,
+        title: userExists.title,
+        isOnboardingCompleted: userExists.isOnboardingCompleted,
+        verified: userExists.verified,
+      });
     } catch (ex) {
       logger.error(ex);
-      return new ServiceResponse<IUser>(false, 'Service error', null, ex);
+      return new ServiceResponse<IUSerData>(false, 'Service error', null, ex);
     }
   }
   public async register(credentials: IAuthRequest): Promise<ServiceResponse<Schema.Types.UUID | null>> {

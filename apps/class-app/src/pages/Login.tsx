@@ -46,11 +46,17 @@ const Login: React.FC = () => {
 
       setLoading(false);
       showToast(response.message, "success");
-      console.log(response.responseObject);
       setUser(response.responseObject!);
-      setTimeout(() => {
-        window.location.href = `/onboard?user=${userId}`;
-      }, 2000);
+      console.log(response.responseObject);
+      if (response.responseObject?.isOnboardingCompleted) {
+        setTimeout(() => {
+          window.location.href = `/dashboard`;
+        }, 2000);
+      } else {
+        setTimeout(() => {
+          window.location.href = `/onboard?user=${userId}`;
+        }, 2000);
+      }
     } catch (error: any) {
       if (error instanceof ServiceResponse) {
         if (error.errors?.message!.includes("Unverified")) {

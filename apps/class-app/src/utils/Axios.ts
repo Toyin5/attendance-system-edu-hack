@@ -3,21 +3,21 @@ const BACKEND_API = import.meta.env.VITE_BACKEND_URL;
 export class ServiceResponse {
   success: boolean;
   message: string;
-  responseObject: Object | null;
+  responseObject: any | null;
   errors?: {
     success: boolean;
     message?: string;
-    responseObject: Object | null;
+    responseObject: any | null;
   };
 
   constructor(
     success: boolean,
     message: string,
-    responseObject: Object | null,
+    responseObject: any | null,
     errors?: {
       success: boolean;
       message?: string;
-      responseObject: Object | null;
+      responseObject: any | null;
     }
   ) {
     this.success = success;

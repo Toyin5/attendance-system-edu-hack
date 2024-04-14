@@ -1,7 +1,7 @@
 {
-  "name": "express-typescript-boilerplate",
+  "name": "attendance-backend",
   "version": "1.0.0",
-  "description": "An Express.js boilerplate backend",
+  "description": "The attendance app backend",
   "main": "index.ts",
   "scripts": {
     "pretty": "pino-pretty",
@@ -44,6 +44,7 @@
     "@types/jest": "^29.5.11",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/nodemailer": "^6.4.14",
+    "@types/pino": "^7.0.5",
     "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^6.18.1",
     "@typescript-eslint/parser": "^6.18.0",
